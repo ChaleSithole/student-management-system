@@ -1,6 +1,10 @@
 ﻿namespace StudentManagementSystem.Models
 {
-    public class StudentStatuscs
+    public enum StudentStatus
     {
+        Active,
+        Graduated,
+        Suspended,
+        Deregistered
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using StudentManagementSystem.Models;
+using System.ComponentModel.DataAnnotations;
 
 public class Student
 {
@@ -19,6 +20,7 @@ public class Student
     [EmailAddress]
     public string Email { get; set; } = string.Empty;
 
+    public StudentStatus Status { get; set; } = StudentStatus.Active;
     public string? Phone { get; set; }
 
     public DateTime DateOfBirth { get; set; }

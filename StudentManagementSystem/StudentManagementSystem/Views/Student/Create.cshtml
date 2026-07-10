@@ -1,0 +1,44 @@
+﻿@model Student
+
+<h2>Add Student</h2>
+
+<form asp-action="Create">
+
+    <div>
+        <label>Student Number</label>
+        <input asp-for="StudentNumber" />
+    </div>
+
+    <div>
+        <label>First Name</label>
+        <input asp-for="FirstName" />
+    </div>
+
+    <div>
+        <label>Last Name</label>
+        <input asp-for="LastName" />
+    </div>
+
+    <div>
+        <label>Email</label>
+        <input asp-for="Email" />
+    </div>
+
+    <div>
+        <label>Faculty</label>
+        <input asp-for="Faculty" />
+    </div>
+
+    <div>
+        <label>Programme</label>
+        <input asp-for="Programme" />
+    </div>
+
+    <div>
+        <label>Year Level</label>
+        <input asp-for="YearLevel" />
+    </div>
+
+    <button type="submit">Save Student</button>
+
+</form>
