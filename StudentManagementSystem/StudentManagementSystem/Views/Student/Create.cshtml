@@ -24,9 +24,21 @@
         <input asp-for="Email" />
     </div>
 
-    <div>
-        <label>Faculty</label>
-        <input asp-for="Faculty" />
+    <div class="mb-3">
+
+        <label asp-for="FacultyId" class="form-label"></label>
+
+        <select asp-for="FacultyId"
+                class="form-select"
+                asp-items="@(new SelectList(ViewBag.Faculties, "FacultyId", "FacultyName"))">
+
+            <option value="">-- Select Faculty --</option>
+
+        </select>
+
+        <span asp-validation-for="FacultyId"
+              class="text-danger"></span>
+
     </div>
 
     <div>

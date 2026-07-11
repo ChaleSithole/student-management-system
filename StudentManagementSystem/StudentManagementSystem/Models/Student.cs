@@ -26,7 +26,10 @@ public class Student
     public DateTime DateOfBirth { get; set; }
 
     [Required]
-    public string Faculty { get; set; } = string.Empty;
+    //public string Faculty { get; set; } = string.Empty;
+    public int FacultyId { get; set; }
+
+    public Faculty? Faculty { get; set; }
 
     [Required]
     public string Programme { get; set; } = string.Empty;

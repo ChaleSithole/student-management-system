@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StudentManagementSystem.Data;
 using StudentManagementSystem.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace StudentManagementSystem.Controllers
 {
@@ -13,15 +14,35 @@ namespace StudentManagementSystem.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string searchString)
         {
-            var students = _context.Students.ToList();
+            var students = _context.Students
+                       .Include(s => s.Faculty)
+                       .AsQueryable();
 
-            return View(students);
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                students = students.Where(s =>
+                    s.StudentNumber.Contains(searchString) ||
+                    s.FirstName.Contains(searchString) ||
+                    s.LastName.Contains(searchString));
+            }
+
+            ViewBag.TotalStudents = _context.Students.Count();
+
+            ViewBag.ActiveStudents = _context.Students.Count(s => s.Status == StudentStatus.Active);
+
+            ViewBag.GraduatedStudents = _context.Students.Count(s => s.Status == StudentStatus.Graduated);
+
+            ViewBag.SuspendedStudents = _context.Students.Count(s => s.Status == StudentStatus.Suspended);
+
+            return View(students.ToList());
         }
 
         public IActionResult Create()
         {
+            ViewBag.Faculties = _context.Faculties.ToList();
+
             return View();
         }
 
@@ -35,6 +56,9 @@ namespace StudentManagementSystem.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Faculties = _context.Faculties.ToList();
+
             return View(student);
         }
 
@@ -103,6 +127,23 @@ namespace StudentManagementSystem.Controllers
             _context.SaveChanges();
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Details(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var student = _context.Students.Find(id);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            return View(student);
         }
     }
 }
