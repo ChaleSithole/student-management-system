@@ -18,6 +18,7 @@ namespace StudentManagementSystem.Controllers
         {
             var students = _context.Students
                        .Include(s => s.Faculty)
+                       .Include(s => s.Programme)
                        .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchString))
@@ -28,13 +29,15 @@ namespace StudentManagementSystem.Controllers
                     s.LastName.Contains(searchString));
             }
 
-            ViewBag.TotalStudents = _context.Students.Count();
+            var allStudents = _context.Students.ToList();
 
-            ViewBag.ActiveStudents = _context.Students.Count(s => s.Status == StudentStatus.Active);
+            ViewBag.TotalStudents = allStudents.Count;
 
-            ViewBag.GraduatedStudents = _context.Students.Count(s => s.Status == StudentStatus.Graduated);
+            ViewBag.ActiveStudents = allStudents.Count(s => s.Status == StudentStatus.Active);
 
-            ViewBag.SuspendedStudents = _context.Students.Count(s => s.Status == StudentStatus.Suspended);
+            ViewBag.GraduatedStudents = allStudents.Count(s => s.Status == StudentStatus.Graduated);
+
+            ViewBag.SuspendedStudents = allStudents.Count(s => s.Status == StudentStatus.Suspended);
 
             return View(students.ToList());
         }
@@ -43,10 +46,13 @@ namespace StudentManagementSystem.Controllers
         {
             ViewBag.Faculties = _context.Faculties.ToList();
 
+            ViewBag.Programmes = _context.Programmes.ToList();
+
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(Student student)
         {
             if (ModelState.IsValid)
@@ -54,10 +60,13 @@ namespace StudentManagementSystem.Controllers
                 _context.Students.Add(student);
                 _context.SaveChanges();
 
+                TempData["SuccessMessage"] = "Student created successfully.";
+
                 return RedirectToAction(nameof(Index));
             }
 
             ViewBag.Faculties = _context.Faculties.ToList();
+            ViewBag.Programmes = _context.Programmes.ToList();
 
             return View(student);
         }
@@ -69,12 +78,18 @@ namespace StudentManagementSystem.Controllers
                 return NotFound();
             }
 
-            var student = _context.Students.Find(id);
+            var student = _context.Students
+                .Include(s => s.Faculty)
+                .Include(s => s.Programme)
+                .FirstOrDefault(s => s.StudentNumber == id);
 
             if (student == null)
             {
                 return NotFound();
             }
+
+            ViewBag.Faculties = _context.Faculties.ToList();
+            ViewBag.Programmes = _context.Programmes.ToList();
 
             return View(student);
         }
@@ -83,15 +98,34 @@ namespace StudentManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Student student)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Students.Update(student);
-                _context.SaveChanges();
+                ViewBag.Faculties = _context.Faculties.ToList();
+                ViewBag.Programmes = _context.Programmes.ToList();
 
-                return RedirectToAction(nameof(Index));
+                return View(student);
             }
 
-            return View(student);
+            var existingStudent = _context.Students.Find(student.StudentNumber);
+
+            if (existingStudent == null)
+            {
+                return NotFound();
+            }
+
+            existingStudent.FirstName = student.FirstName;
+            existingStudent.LastName = student.LastName;
+            existingStudent.Email = student.Email;
+            existingStudent.FacultyId = student.FacultyId;
+            existingStudent.ProgrammeId = student.ProgrammeId;
+            existingStudent.YearLevel = student.YearLevel;
+            existingStudent.Status = student.Status;
+
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Student updated successfully.";
+
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Delete(string id)
@@ -101,7 +135,10 @@ namespace StudentManagementSystem.Controllers
                 return NotFound();
             }
 
-            var student = _context.Students.Find(id);
+            var student = _context.Students
+                .Include(s => s.Faculty)
+                .Include(s => s.Programme)
+                .FirstOrDefault(s => s.StudentNumber == id);
 
             if (student == null)
             {
@@ -113,18 +150,19 @@ namespace StudentManagementSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(Student student)
+        public IActionResult Delete(Student studentNumber)
         {
-            var studentToDelete = _context.Students.Find(student.StudentNumber);
+            var student = _context.Students.Find(studentNumber);
 
-            if (studentToDelete == null)
+            if (student == null)
             {
                 return NotFound();
             }
 
-            _context.Students.Remove(studentToDelete);
-
+            _context.Students.Remove(student);
             _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Student deleted successfully.";
 
             return RedirectToAction(nameof(Index));
         }
@@ -136,7 +174,10 @@ namespace StudentManagementSystem.Controllers
                 return NotFound();
             }
 
-            var student = _context.Students.Find(id);
+            var student = _context.Students
+                .Include(s => s.Faculty)
+                .Include(s => s.Programme)
+                .FirstOrDefault(s => s.StudentNumber == id);
 
             if (student == null)
             {

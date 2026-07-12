@@ -1,6 +1,21 @@
 ﻿@model IEnumerable<Student>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+
+        @TempData["SuccessMessage"]
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+        </button>
+
+    </div>
+}
+
 <h2>Student Management</h2>
+
 <div class="row mb-4">
 
     <div class="col-md-3">
@@ -100,7 +115,7 @@
                 <td>@student.StudentNumber</td>
                 <td>@student.FirstName @student.LastName</td>
                 <td>@student.Faculty?.FacultyName</td>
-                <td>@student.Programme</td>
+                <td>@student.Programme?.ProgrammeName</td>
                 <td>@student.YearLevel</td>
                 <td>@student.Status</td>
                 <td>
@@ -118,8 +133,9 @@
                     </a>
 
                     <a asp-action="Delete"
-                       asp-route-id="@student.StudentNumber"
-                       class="btn btn-danger btn-sm">
+                        asp-route-id="@student.StudentNumber"
+                        class="btn btn-danger btn-sm"
+                        onclick="return confirm('Are you sure you want to delete this student?');">
                         Delete
                     </a>
 

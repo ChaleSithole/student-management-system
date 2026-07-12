@@ -32,7 +32,10 @@ public class Student
     public Faculty? Faculty { get; set; }
 
     [Required]
-    public string Programme { get; set; } = string.Empty;
+    //public string Programme { get; set; } = string.Empty;
+    public int ProgrammeId { get; set; }
+
+    public Programme? Programme { get; set; }
 
     [Range(1, 6)]
     public int YearLevel { get; set; }

@@ -2,43 +2,111 @@
 
 <h2>Edit Student</h2>
 
-<form asp-action="Edit">
+<form asp-action="Edit" method="post">
 
-    <div>
-        <label>Student Number</label>
-        <input asp-for="StudentNumber" readonly />/>
+    <div asp-validation-summary="ModelOnly"
+         class="text-danger mb-3">
     </div>
 
-    <div>
-        <label>First Name</label>
-        <input asp-for="FirstName" />
+    <div class="mb-3">
+        <label asp-for="StudentNumber" class="form-label"></label>
+
+        <input asp-for="StudentNumber"
+               class="form-control"
+               readonly />
+
+        <input type="hidden" asp-for="StudentNumber" />
+
+        <span asp-validation-for="StudentNumber"
+              class="text-danger"></span>
     </div>
 
-    <div>
-        <label>Last Name</label>
-        <input asp-for="LastName" />
+    <div class="mb-3">
+        <label asp-for="FirstName" class="form-label"></label>
+
+        <input asp-for="FirstName"
+               class="form-control" />
+
+        <span asp-validation-for="FirstName"
+              class="text-danger"></span>
     </div>
 
-    <div>
-        <label>Email</label>
-        <input asp-for="Email" />
+    <div class="mb-3">
+        <label asp-for="LastName" class="form-label"></label>
+
+        <input asp-for="LastName"
+               class="form-control" />
+
+        <span asp-validation-for="LastName"
+              class="text-danger"></span>
     </div>
 
-    <div>
-        <label>Faculty</label>
-        <input asp-for="Faculty" />
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label"></label>
+
+        <input asp-for="Email"
+               class="form-control" />
+
+        <span asp-validation-for="Email"
+              class="text-danger"></span>
     </div>
 
-    <div>
-        <label>Programme</label>
-        <input asp-for="Programme" />
+    <div class="mb-3">
+
+        <label asp-for="FacultyId" class="form-label"></label>
+
+        <select asp-for="FacultyId"
+                class="form-select"
+                asp-items="@(new SelectList(ViewBag.Faculties, "FacultyId", "FacultyName"))">
+
+            <option value="">-- Select Faculty --</option>
+
+        </select>
+
+        <span asp-validation-for="FacultyId"
+              class="text-danger"></span>
+
     </div>
 
-    <div>
-        <label>Year Level</label>
-        <input asp-for="YearLevel" />
+    <div class="mb-3">
+
+        <label asp-for="ProgrammeId" class="form-label"></label>
+
+        <select asp-for="ProgrammeId"
+                class="form-select"
+                asp-items="@(new SelectList(ViewBag.Programmes, "ProgrammeId", "ProgrammeName"))">
+
+            <option value="">-- Select Programme --</option>
+
+        </select>
+
+        <span asp-validation-for="ProgrammeId"
+              class="text-danger"></span>
+
     </div>
 
-    <button type="submit">Save Student</button>
+    <div class="mb-3">
+        <label asp-for="YearLevel" class="form-label"></label>
+
+        <input asp-for="YearLevel"
+               class="form-control" />
+
+        <span asp-validation-for="YearLevel"
+              class="text-danger"></span>
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary">
+        Save Student
+    </button>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Cancel
+    </a>
 
 </form>
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -16,10 +16,10 @@
     <dd class="col-sm-9">@Model.LastName</dd>
 
     <dt class="col-sm-3">Faculty</dt>
-    <dd class="col-sm-9">@Model.Faculty</dd>
+    <dd class="col-sm-9">@Model.Faculty?.FacultyName</dd>
 
     <dt class="col-sm-3">Programme</dt>
-    <dd class="col-sm-9">@Model.Programme</dd>
+    <dd class="col-sm-9">@Model.Programme?.ProgrammeName</dd>
 
     <dt class="col-sm-3">Year Level</dt>
     <dd class="col-sm-9">@Model.YearLevel</dd>
@@ -40,6 +40,11 @@
    asp-route-id="@Model.StudentNumber"
    class="btn btn-warning">
     Edit
+</a>
+<a asp-action="Delete"
+   asp-route-id="@Model.StudentNumber"
+   class="btn btn-danger">
+    Delete
 </a>
 
 <a asp-action="Index"

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StudentManagementSystem.Data.Seed;
 using StudentManagementSystem.Models;
 
 namespace StudentManagementSystem.Data
@@ -17,44 +18,22 @@ namespace StudentManagementSystem.Data
             modelBuilder.Entity<Student>()
                 .HasOne(s => s.Faculty)
                 .WithMany(f => f.Students)
-                .HasForeignKey(s => s.FacultyId);
+                .HasForeignKey(s => s.FacultyId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Faculty>().HasData(
+            modelBuilder.Entity<Programme>()
+                .HasOne(p => p.Faculty)
+                .WithMany(f => f.Programmes)
+                .HasForeignKey(p => p.FacultyId);
 
-    new Faculty
-    {
-        FacultyId = 1,
-        FacultyName = "Natural and Agricultural Sciences"
-    },
+            FacultySeed.Seed(modelBuilder);
 
-    new Faculty
-    {
-        FacultyId = 2,
-        FacultyName = "Health Sciences"
-    },
+            ProgrammeSeed.Seed(modelBuilder);
 
-    new Faculty
-    {
-        FacultyId = 3,
-        FacultyName = "Education"
-    },
-
-    new Faculty
-    {
-        FacultyId = 4,
-        FacultyName = "Law"
-    },
-
-    new Faculty
-    {
-        FacultyId = 5,
-        FacultyName = "Economic and Management Sciences"
-    }
-
-);
         }
 
         public DbSet<Student> Students { get; set; }
         public DbSet<Faculty> Faculties { get; set; }
+        public DbSet<Programme> Programmes { get; set; }
     }
 }

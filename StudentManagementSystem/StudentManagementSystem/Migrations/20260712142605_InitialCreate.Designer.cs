@@ -12,8 +12,8 @@ using StudentManagementSystem.Data;
 namespace StudentManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260711130438_InitialDatabase")]
-    partial class InitialDatabase
+    [Migration("20260712142605_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,9 +54,8 @@ namespace StudentManagementSystem.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Programme")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ProgrammeId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
@@ -70,6 +69,8 @@ namespace StudentManagementSystem.Migrations
                     b.HasKey("StudentNumber");
 
                     b.HasIndex("FacultyId");
+
+                    b.HasIndex("ProgrammeId");
 
                     b.ToTable("Students");
                 });
@@ -119,6 +120,85 @@ namespace StudentManagementSystem.Migrations
                         });
                 });
 
+            modelBuilder.Entity("StudentManagementSystem.Models.Programme", b =>
+                {
+                    b.Property<int>("ProgrammeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProgrammeId"));
+
+                    b.Property<int>("FacultyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProgrammeName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("ProgrammeId");
+
+                    b.HasIndex("FacultyId");
+
+                    b.ToTable("Programmes");
+
+                    b.HasData(
+                        new
+                        {
+                            ProgrammeId = 1,
+                            FacultyId = 1,
+                            ProgrammeName = "BSc Information Technology"
+                        },
+                        new
+                        {
+                            ProgrammeId = 2,
+                            FacultyId = 1,
+                            ProgrammeName = "BSc Computer Science"
+                        },
+                        new
+                        {
+                            ProgrammeId = 3,
+                            FacultyId = 1,
+                            ProgrammeName = "BSc Mathematics"
+                        },
+                        new
+                        {
+                            ProgrammeId = 4,
+                            FacultyId = 2,
+                            ProgrammeName = "Bachelor of Nursing"
+                        },
+                        new
+                        {
+                            ProgrammeId = 5,
+                            FacultyId = 2,
+                            ProgrammeName = "Physiotherapy"
+                        },
+                        new
+                        {
+                            ProgrammeId = 6,
+                            FacultyId = 3,
+                            ProgrammeName = "BEd Foundation Phase"
+                        },
+                        new
+                        {
+                            ProgrammeId = 7,
+                            FacultyId = 4,
+                            ProgrammeName = "LLB"
+                        },
+                        new
+                        {
+                            ProgrammeId = 8,
+                            FacultyId = 5,
+                            ProgrammeName = "BCom Accounting"
+                        },
+                        new
+                        {
+                            ProgrammeId = 9,
+                            FacultyId = 5,
+                            ProgrammeName = "BCom Economics"
+                        });
+                });
+
             modelBuilder.Entity("Student", b =>
                 {
                     b.HasOne("StudentManagementSystem.Models.Faculty", "Faculty")
@@ -127,10 +207,36 @@ namespace StudentManagementSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("StudentManagementSystem.Models.Programme", "Programme")
+                        .WithMany("Students")
+                        .HasForeignKey("ProgrammeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Faculty");
+
+                    b.Navigation("Programme");
+                });
+
+            modelBuilder.Entity("StudentManagementSystem.Models.Programme", b =>
+                {
+                    b.HasOne("StudentManagementSystem.Models.Faculty", "Faculty")
+                        .WithMany("Programmes")
+                        .HasForeignKey("FacultyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Faculty");
                 });
 
             modelBuilder.Entity("StudentManagementSystem.Models.Faculty", b =>
+                {
+                    b.Navigation("Programmes");
+
+                    b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("StudentManagementSystem.Models.Programme", b =>
                 {
                     b.Navigation("Students");
                 });

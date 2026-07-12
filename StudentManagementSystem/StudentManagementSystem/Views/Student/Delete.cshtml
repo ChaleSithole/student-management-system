@@ -18,13 +18,19 @@
 
 <p>
     <strong>Programme:</strong>
-    @Model.Programme
+    @Model.Programme?.ProgrammeName
+</p>
+
+<p>
+    <strong>Faculty:</strong>
+    @Model.Faculty?.FacultyName
 </p>
 
 <form asp-action="Delete">
 
     <input type="hidden"
-           asp-for="StudentNumber" />
+           name="studentNumber"
+           value="@Model.StudentNumber" />
 
     <button type="submit">
         Delete

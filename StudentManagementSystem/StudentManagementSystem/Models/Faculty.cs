@@ -13,5 +13,7 @@ namespace StudentManagementSystem.Models
 
         // One Faculty has many Students
         public ICollection<Student> Students { get; set; } = new List<Student>();
+
+        public ICollection<Programme> Programmes { get; set; } = new List<Programme>();
     }
 }
