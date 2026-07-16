@@ -1,52 +1,44 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudentManagementSystem.Data;
 using StudentManagementSystem.Models;
-using Microsoft.EntityFrameworkCore;
+using StudentManagementSystem.Services;
 
 namespace StudentManagementSystem.Controllers
 {
     public class StudentController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IStudentService _studentService;
 
-        public StudentController(ApplicationDbContext context)
+        public StudentController(IStudentService studentService)
         {
-            _context = context;
+            _studentService = studentService;
         }
-
         public IActionResult Index(string searchString)
         {
-            var students = _context.Students
-                       .Include(s => s.Faculty)
-                       .Include(s => s.Programme)
-                       .AsQueryable();
+            var students = _studentService.GetAllStudents();
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 students = students.Where(s =>
                     s.StudentNumber.Contains(searchString) ||
                     s.FirstName.Contains(searchString) ||
-                    s.LastName.Contains(searchString));
+                    s.LastName.Contains(searchString))
+                    .ToList();
             }
 
-            var allStudents = _context.Students.ToList();
+            ViewBag.TotalStudents = _studentService.GetTotalStudents();
+            ViewBag.ActiveStudents = _studentService.GetActiveStudents();
+            ViewBag.GraduatedStudents = _studentService.GetGraduatedStudents();
+            ViewBag.SuspendedStudents = _studentService.GetSuspendedStudents();
 
-            ViewBag.TotalStudents = allStudents.Count;
-
-            ViewBag.ActiveStudents = allStudents.Count(s => s.Status == StudentStatus.Active);
-
-            ViewBag.GraduatedStudents = allStudents.Count(s => s.Status == StudentStatus.Graduated);
-
-            ViewBag.SuspendedStudents = allStudents.Count(s => s.Status == StudentStatus.Suspended);
-
-            return View(students.ToList());
+            return View(students);
         }
 
         public IActionResult Create()
         {
-            ViewBag.Faculties = _context.Faculties.ToList();
-
-            ViewBag.Programmes = _context.Programmes.ToList();
+            ViewBag.Faculties = _studentService.GetAllFaculties();
+            ViewBag.Programmes = _studentService.GetAllProgrammes();
 
             return View();
         }
@@ -57,16 +49,15 @@ namespace StudentManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Students.Add(student);
-                _context.SaveChanges();
+                _studentService.AddStudent(student);
 
                 TempData["SuccessMessage"] = "Student created successfully.";
 
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Faculties = _context.Faculties.ToList();
-            ViewBag.Programmes = _context.Programmes.ToList();
+            ViewBag.Faculties = _studentService.GetAllFaculties();
+            ViewBag.Programmes = _studentService.GetAllProgrammes();
 
             return View(student);
         }
@@ -74,22 +65,15 @@ namespace StudentManagementSystem.Controllers
         public IActionResult Edit(string id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var student = _context.Students
-                .Include(s => s.Faculty)
-                .Include(s => s.Programme)
-                .FirstOrDefault(s => s.StudentNumber == id);
+            var student = _studentService.GetStudentById(id);
 
             if (student == null)
-            {
                 return NotFound();
-            }
 
-            ViewBag.Faculties = _context.Faculties.ToList();
-            ViewBag.Programmes = _context.Programmes.ToList();
+            ViewBag.Faculties = _studentService.GetAllFaculties();
+            ViewBag.Programmes = _studentService.GetAllProgrammes();
 
             return View(student);
         }
@@ -98,69 +82,39 @@ namespace StudentManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Student student)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                ViewBag.Faculties = _context.Faculties.ToList();
-                ViewBag.Programmes = _context.Programmes.ToList();
+                _studentService.UpdateStudent(student);
 
-                return View(student);
+                TempData["SuccessMessage"] = "Student updated successfully.";
+
+                return RedirectToAction(nameof(Index));
             }
 
-            var existingStudent = _context.Students.Find(student.StudentNumber);
+            ViewBag.Faculties = _studentService.GetAllFaculties();
+            ViewBag.Programmes = _studentService.GetAllProgrammes();
 
-            if (existingStudent == null)
-            {
-                return NotFound();
-            }
-
-            existingStudent.FirstName = student.FirstName;
-            existingStudent.LastName = student.LastName;
-            existingStudent.Email = student.Email;
-            existingStudent.FacultyId = student.FacultyId;
-            existingStudent.ProgrammeId = student.ProgrammeId;
-            existingStudent.YearLevel = student.YearLevel;
-            existingStudent.Status = student.Status;
-
-            _context.SaveChanges();
-
-            TempData["SuccessMessage"] = "Student updated successfully.";
-
-            return RedirectToAction(nameof(Index));
+            return View(student);
         }
 
         public IActionResult Delete(string id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var student = _context.Students
-                .Include(s => s.Faculty)
-                .Include(s => s.Programme)
-                .FirstOrDefault(s => s.StudentNumber == id);
+            var student = _studentService.GetStudentById(id);
 
             if (student == null)
-            {
                 return NotFound();
-            }
 
             return View(student);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(Student studentNumber)
+        public IActionResult Delete(Student student)
         {
-            var student = _context.Students.Find(studentNumber);
-
-            if (student == null)
-            {
-                return NotFound();
-            }
-
-            _context.Students.Remove(student);
-            _context.SaveChanges();
+            _studentService.DeleteStudent(student.StudentNumber);
 
             TempData["SuccessMessage"] = "Student deleted successfully.";
 
@@ -170,19 +124,12 @@ namespace StudentManagementSystem.Controllers
         public IActionResult Details(string id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var student = _context.Students
-                .Include(s => s.Faculty)
-                .Include(s => s.Programme)
-                .FirstOrDefault(s => s.StudentNumber == id);
+            var student = _studentService.GetStudentById(id);
 
             if (student == null)
-            {
                 return NotFound();
-            }
 
             return View(student);
         }
