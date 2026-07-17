@@ -49,7 +49,19 @@ namespace StudentManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                _studentService.AddStudent(student);
+                bool success = _studentService.AddStudent(student);
+
+                if (!success)
+                {
+                    ModelState.AddModelError(
+                        "StudentNumber",
+                        "A student with this Student Number already exists.");
+
+                    ViewBag.Faculties = _studentService.GetAllFaculties();
+                    ViewBag.Programmes = _studentService.GetAllProgrammes();
+
+                    return View(student);
+                }
 
                 TempData["SuccessMessage"] = "Student created successfully.";
 
@@ -132,6 +144,22 @@ namespace StudentManagementSystem.Controllers
                 return NotFound();
 
             return View(student);
+        }
+
+        [HttpGet]
+        public JsonResult GetProgrammes(int facultyId)
+        {
+            var programmes = _studentService
+                .GetAllProgrammes()
+                .Where(p => p.FacultyId == facultyId)
+                .Select(p => new
+                {
+                    p.ProgrammeId,
+                    p.ProgrammeName
+                })
+                .ToList();
+
+            return Json(programmes);
         }
     }
 }

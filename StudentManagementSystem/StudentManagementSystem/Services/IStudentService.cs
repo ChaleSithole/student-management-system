@@ -8,7 +8,7 @@ namespace StudentManagementSystem.Services
 
         Student? GetStudentById(string studentNumber);
 
-        void AddStudent(Student student);
+        bool AddStudent(Student student);
 
         void UpdateStudent(Student student);
 

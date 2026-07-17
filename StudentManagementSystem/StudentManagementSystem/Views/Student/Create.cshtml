@@ -53,6 +53,7 @@
         <label asp-for="Faculty" class="form-label"></label>
 
         <select asp-for="FacultyId"
+                id="facultyDropdown"
                 class="form-select"
                 asp-items="@(new SelectList(ViewBag.Faculties, "FacultyId", "FacultyName"))">
 
@@ -70,12 +71,14 @@
         <label asp-for="Programme" class="form-label"></label>
 
         <select asp-for="ProgrammeId"
-                class="form-select"
-                asp-items="@(new SelectList(ViewBag.Programmes, "ProgrammeId", "ProgrammeName"))">
+                id="programmeDropdown"
+                class="form-select">
 
             <option value="">-- Select Programme --</option>
 
         </select>
+
+            
 
         <span asp-validation-for="ProgrammeId"
               class="text-danger"></span>
@@ -106,4 +109,40 @@
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        $("#facultyDropdown").change(function () {
+
+            var facultyId = $(this).val();
+
+            $("#programmeDropdown").empty();
+
+            $("#programmeDropdown").append(
+                '<option value="">-- Select Programme --</option>');
+
+            if (facultyId === "")
+                return;
+
+            $.getJSON("/Student/GetProgrammes",
+                { facultyId: facultyId },
+                function (data) {
+
+                    $.each(data, function (index, programme) {
+
+                        $("#programmeDropdown").append(
+
+                            '<option value="' +
+                            programme.programmeId +
+                            '">' +
+                            programme.programmeName +
+                            '</option>');
+
+                    });
+
+                });
+
+        });
+
+    </script>
 }

@@ -13,12 +13,21 @@ namespace StudentManagementSystem.Services
             _context = context;
         }
 
-        public void AddStudent(Student student)
+        public bool AddStudent(Student student)
         {
+            bool studentExists = _context.Students
+                .Any(s => s.StudentNumber == student.StudentNumber);
+
+            if (studentExists)
+            {
+                return false;
+            }
+
             _context.Students.Add(student);
             _context.SaveChanges();
-        }
 
+            return true;
+        }
         public void DeleteStudent(string studentNumber)
         {
             var student = _context.Students.Find(studentNumber);
