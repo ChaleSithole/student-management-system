@@ -47,12 +47,27 @@ namespace StudentManagementSystem.Services
             return _context.Students.Count(s => s.Status == StudentStatus.Active);
         }
 
-        public List<Student> GetAllStudents()
+        public async Task<PaginatedList<Student>> GetStudentsAsync( int pageIndex,int pageSize)
         {
-            return _context.Students
+            var students = _context.Students
                 .Include(s => s.Faculty)
                 .Include(s => s.Programme)
-                .ToList();
+                .OrderBy(s => s.StudentNumber);
+
+            return await PaginatedList<Student>.CreateAsync(
+                students,
+                pageIndex,
+                pageSize);
+        }
+
+        public int GetTotalStudents()
+        {
+            return _context.Students.Count();
+        }
+
+        public int GetStudentsByStatus(StudentStatus status)
+        {
+            return _context.Students.Count(s => s.Status == status);
         }
 
         public int GetGraduatedStudents()
@@ -71,11 +86,6 @@ namespace StudentManagementSystem.Services
         public int GetSuspendedStudents()
         {
             return _context.Students.Count(s => s.Status == StudentStatus.Suspended);
-        }
-
-        public int GetTotalStudents()
-        {
-            return _context.Students.Count();
         }
 
         public void UpdateStudent(Student student)
@@ -109,5 +119,6 @@ namespace StudentManagementSystem.Services
                 .Include(p => p.Faculty)
                 .ToList();
         }
+
     }
 }

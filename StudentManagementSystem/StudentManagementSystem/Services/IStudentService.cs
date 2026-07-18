@@ -4,7 +4,7 @@ namespace StudentManagementSystem.Services
 {
     public interface IStudentService
     {
-        List<Student> GetAllStudents();
+        Task<PaginatedList<Student>> GetStudentsAsync(int pageIndex, int pageSize);
 
         Student? GetStudentById(string studentNumber);
 
@@ -24,5 +24,7 @@ namespace StudentManagementSystem.Services
         List<Faculty> GetAllFaculties();
 
         List<Programme> GetAllProgrammes();
+
+        int GetStudentsByStatus(StudentStatus status);
     }
 }
