@@ -47,12 +47,38 @@ namespace StudentManagementSystem.Services
             return _context.Students.Count(s => s.Status == StudentStatus.Active);
         }
 
-        public async Task<PaginatedList<Student>> GetStudentsAsync( int pageIndex,int pageSize)
+        public async Task<PaginatedList<Student>> GetStudentsAsync(string? searchString,
+                int? facultyId, int? programmeId,StudentStatus? status,int? yearLevel,
+                int pageIndex,int pageSize)
         {
             var students = _context.Students
                 .Include(s => s.Faculty)
                 .Include(s => s.Programme)
-                .OrderBy(s => s.StudentNumber);
+                .OrderBy(s => s.StudentNumber)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                students = students.Where(s =>
+                    s.StudentNumber.Contains(searchString) ||
+                    s.FirstName.Contains(searchString) ||
+                    s.LastName.Contains(searchString));
+            }
+
+            if (facultyId.HasValue)
+            {
+                students = students.Where(s => s.FacultyId == facultyId.Value);
+            }
+
+            if (programmeId.HasValue)
+            {
+                students = students.Where(s => s.ProgrammeId == programmeId.Value);
+            }
+
+            if (yearLevel.HasValue)
+            {
+                students = students.Where(s => s.YearLevel == yearLevel.Value);
+            }
 
             return await PaginatedList<Student>.CreateAsync(
                 students,
@@ -110,13 +136,15 @@ namespace StudentManagementSystem.Services
 
         public List<Faculty> GetAllFaculties()
         {
-            return _context.Faculties.ToList();
+            return _context.Faculties
+                .OrderBy(f => f.FacultyName)
+                .ToList();
         }
 
         public List<Programme> GetAllProgrammes()
         {
             return _context.Programmes
-                .Include(p => p.Faculty)
+                .OrderBy(p => p.ProgrammeName)
                 .ToList();
         }
 

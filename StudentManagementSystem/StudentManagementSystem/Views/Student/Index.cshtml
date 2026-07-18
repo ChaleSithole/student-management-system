@@ -1,16 +1,16 @@
 ﻿@model StudentManagementSystem.Models.PaginatedList<Student>
+@using StudentManagementSystem.Models
+@using Microsoft.AspNetCore.Mvc.Rendering
 
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-
         @TempData["SuccessMessage"]
 
         <button type="button"
                 class="btn-close"
                 data-bs-dismiss="alert">
         </button>
-
     </div>
 }
 
@@ -55,28 +55,105 @@
     </div>
 
 </div>
+
 <p class="text-muted">
     Manage all registered students.
 </p>
 
 <div class="row mb-3">
 
-    <div class="col-md-6">
+    <div class="col-md-10">
 
         <form asp-action="Index" method="get">
 
-            <div class="input-group">
+            <div class="row g-2">
 
-                <input type="text"
-                       name="searchString"
-                       class="form-control"
-                       placeholder="Search by student number, first name or last name"
-                       value="@Context.Request.Query["searchString"]" />
+                <div class="col-md-3">
 
-                <button class="btn btn-primary"
-                        type="submit">
-                    Search
-                </button>
+                    <input type="text"
+                           name="searchString"
+                           class="form-control"
+                           placeholder="Search..."
+                           value="@ViewBag.CurrentFilter" />
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <select name="facultyId"
+                            class="form-select"
+                            asp-items="@(new SelectList(ViewBag.Faculties, "FacultyId", "FacultyName", ViewBag.CurrentFaculty))">
+
+                        <option value="">All Faculties</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <select name="programmeId"
+                            class="form-select"
+                            asp-items="@(new SelectList(ViewBag.Programmes, "ProgrammeId", "ProgrammeName", ViewBag.CurrentProgramme))">
+
+                        <option value="">All Programmes</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <select name="status" class="form-select">
+
+                        <option value="">All Statuses</option>
+
+                        @foreach (StudentStatus item in Enum.GetValues(typeof(StudentStatus)))
+                        {
+                            if (ViewBag.CurrentStatus != null && ViewBag.CurrentStatus.Equals(item))
+                            {
+                                <option value="@item" selected>@item</option>
+                            }
+                            else
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        }
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-1">
+
+                    <select name="yearLevel" class="form-select">
+
+                        <option value="">Year</option>
+
+                        @for (int i = 1; i <= 6; i++)
+                        {
+                            if (ViewBag.CurrentYearLevel != null && (int)ViewBag.CurrentYearLevel == i)
+                            {
+                                <option value="@i" selected>@i</option>
+                            }
+                            else
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <button class="btn btn-primary w-100"
+                            type="submit">
+                        Filter
+                    </button>
+
+                </div>
 
             </div>
 
@@ -84,7 +161,7 @@
 
     </div>
 
-    <div class="col-md-6 text-end">
+    <div class="col-md-2 text-end">
 
         <a asp-action="Create"
            class="btn btn-success">
@@ -96,7 +173,9 @@
 </div>
 
 <table class="table table-striped table-hover">
+
     <thead>
+
         <tr>
             <th>Student Number</th>
             <th>Name</th>
@@ -106,18 +185,27 @@
             <th>Status</th>
             <th>Actions</th>
         </tr>
+
     </thead>
 
     <tbody>
+
         @foreach (var student in Model)
         {
             <tr>
+
                 <td>@student.StudentNumber</td>
+
                 <td>@student.FirstName @student.LastName</td>
+
                 <td>@student.Faculty?.FacultyName</td>
+
                 <td>@student.Programme?.ProgrammeName</td>
+
                 <td>@student.YearLevel</td>
+
                 <td>@student.Status</td>
+
                 <td>
 
                     <a asp-action="Details"
@@ -133,46 +221,78 @@
                     </a>
 
                     <a asp-action="Delete"
-                        asp-route-id="@student.StudentNumber"
-                        class="btn btn-danger btn-sm"
-                        onclick="return confirm('Are you sure you want to delete this student?');">
+                       asp-route-id="@student.StudentNumber"
+                       class="btn btn-danger btn-sm">
                         Delete
                     </a>
 
                 </td>
+
             </tr>
         }
+
     </tbody>
+
 </table>
+
 <nav class="mt-4">
+
     <ul class="pagination justify-content-center">
 
         <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+
             <a class="page-link"
                asp-action="Index"
-               asp-route-pageNumber="@(Model.PageIndex - 1)">
+               asp-route-pageNumber="@(Model.PageIndex - 1)"
+               asp-route-searchString="@ViewBag.CurrentFilter"
+               asp-route-facultyId="@ViewBag.CurrentFaculty"
+               asp-route-programmeId="@ViewBag.CurrentProgramme"
+               asp-route-status="@ViewBag.CurrentStatus"
+               asp-route-yearLevel="@ViewBag.CurrentYearLevel">
+
                 Previous
+
             </a>
+
         </li>
 
         @for (int i = 1; i <= Model.TotalPages; i++)
         {
             <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+
                 <a class="page-link"
                    asp-action="Index"
-                   asp-route-pageNumber="@i">
+                   asp-route-pageNumber="@i"
+                   asp-route-searchString="@ViewBag.CurrentFilter"
+                   asp-route-facultyId="@ViewBag.CurrentFaculty"
+                   asp-route-programmeId="@ViewBag.CurrentProgramme"
+                   asp-route-status="@ViewBag.CurrentStatus"
+                   asp-route-yearLevel="@ViewBag.CurrentYearLevel">
+
                     @i
+
                 </a>
+
             </li>
         }
 
         <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+
             <a class="page-link"
                asp-action="Index"
-               asp-route-pageNumber="@(Model.PageIndex + 1)">
+               asp-route-pageNumber="@(Model.PageIndex + 1)"
+               asp-route-searchString="@ViewBag.CurrentFilter"
+               asp-route-facultyId="@ViewBag.CurrentFaculty"
+               asp-route-programmeId="@ViewBag.CurrentProgramme"
+               asp-route-status="@ViewBag.CurrentStatus"
+               asp-route-yearLevel="@ViewBag.CurrentYearLevel">
+
                 Next
+
             </a>
+
         </li>
 
     </ul>
+
 </nav>

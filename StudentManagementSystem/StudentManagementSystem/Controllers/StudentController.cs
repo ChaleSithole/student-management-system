@@ -14,22 +14,40 @@ namespace StudentManagementSystem.Controllers
         {
             _studentService = studentService;
         }
-        public async Task<IActionResult> Index(int? pageNumber)
+        public async Task<IActionResult> Index(
+            string? searchString,
+            int? facultyId,
+            int? programmeId,
+            StudentStatus? status,
+            int? yearLevel,
+            int? pageNumber)
         {
             const int pageSize = 5;
 
             var students = await _studentService.GetStudentsAsync(
+                searchString,
+                facultyId,
+                programmeId,
+                status,
+                yearLevel,
                 pageNumber ?? 1,
                 pageSize);
 
+            ViewBag.CurrentFilter = searchString;
 
             ViewBag.TotalStudents = _studentService.GetTotalStudents();
-
             ViewBag.ActiveStudents = _studentService.GetStudentsByStatus(StudentStatus.Active);
-
             ViewBag.GraduatedStudents = _studentService.GetStudentsByStatus(StudentStatus.Graduated);
-
             ViewBag.SuspendedStudents = _studentService.GetStudentsByStatus(StudentStatus.Suspended);
+
+            ViewBag.Faculties = _studentService.GetAllFaculties();
+            ViewBag.Programmes = _studentService.GetAllProgrammes();
+
+            ViewBag.CurrentFilter = searchString;
+            ViewBag.CurrentFaculty = facultyId;
+            ViewBag.CurrentProgramme = programmeId;
+            ViewBag.CurrentStatus = status;
+            ViewBag.CurrentYearLevel = yearLevel;
 
             return View(students);
         }

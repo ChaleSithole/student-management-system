@@ -4,8 +4,14 @@ namespace StudentManagementSystem.Services
 {
     public interface IStudentService
     {
-        Task<PaginatedList<Student>> GetStudentsAsync(int pageIndex, int pageSize);
-
+        Task<PaginatedList<Student>> GetStudentsAsync(
+            string? searchString,
+            int? facultyId,
+            int? programmeId,
+            StudentStatus? status,
+            int? yearLevel,
+            int pageIndex,
+            int pageSize);
         Student? GetStudentById(string studentNumber);
 
         bool AddStudent(Student student);
