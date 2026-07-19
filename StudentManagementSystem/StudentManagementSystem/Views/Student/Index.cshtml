@@ -73,7 +73,7 @@
                     <input type="text"
                            name="searchString"
                            class="form-control"
-                           placeholder="Search..."
+                           placeholder="Search by student number or name..."
                            value="@ViewBag.CurrentFilter" />
 
                 </div>
@@ -190,41 +190,102 @@
 
     <tbody>
 
-        @foreach (var student in Model)
+        @if (Model.Any())
+        {
+            @foreach (var student in Model)
+            {
+                <tr>
+
+                    <td>@student.StudentNumber</td>
+
+                    <td>@student.FirstName @student.LastName</td>
+
+                    <td>@student.Faculty?.FacultyName</td>
+
+                    <td>@student.Programme?.ProgrammeName</td>
+
+                    <td>@student.YearLevel</td>
+
+                    <td>
+
+                        @switch (student.Status)
+                        {
+                            case StudentStatus.Active:
+                                <span class="badge bg-success">Active</span>
+                                break;
+
+                            case StudentStatus.Graduated:
+                                <span class="badge bg-primary">Graduated</span>
+                                break;
+
+                            case StudentStatus.Suspended:
+                                <span class="badge bg-warning text-dark">Suspended</span>
+                                break;
+
+                            case StudentStatus.Deregistered:
+                                <span class="badge bg-danger">Deregistered</span>
+                                break;
+                        }
+
+                    </td>
+
+                    <td>
+
+                        <a asp-action="Details"
+                           asp-route-id="@student.StudentNumber"
+                           class="btn btn-info btn-sm">
+                            Details
+                        </a>
+
+                        <a asp-action="Edit"
+                           asp-route-id="@student.StudentNumber"
+                           class="btn btn-warning btn-sm">
+                            Edit
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@student.StudentNumber"
+                           class="btn btn-danger btn-sm">
+                            Delete
+                        </a>
+
+                    </td>
+
+                </tr>
+            }
+        }
+        else
         {
             <tr>
 
-                <td>@student.StudentNumber</td>
+                <td colspan="7" class="text-center py-5">
 
-                <td>@student.FirstName @student.LastName</td>
+                    @if (ViewBag.TotalStudents == 0)
+                    {
+                        <h4>No students have been registered yet.</h4>
 
-                <td>@student.Faculty?.FacultyName</td>
+                        <p class="text-muted">
+                            Start by registering your first student.
+                        </p>
 
-                <td>@student.Programme?.ProgrammeName</td>
+                        <a asp-action="Create"
+                           class="btn btn-success">
+                            Register First Student
+                        </a>
+                    }
+                    else
+                    {
+                        <h4>No students match your search criteria.</h4>
 
-                <td>@student.YearLevel</td>
+                        <p class="text-muted">
+                            Try changing or clearing your search filters.
+                        </p>
 
-                <td>@student.Status</td>
-
-                <td>
-
-                    <a asp-action="Details"
-                       asp-route-id="@student.StudentNumber"
-                       class="btn btn-info btn-sm">
-                        Details
-                    </a>
-
-                    <a asp-action="Edit"
-                       asp-route-id="@student.StudentNumber"
-                       class="btn btn-warning btn-sm">
-                        Edit
-                    </a>
-
-                    <a asp-action="Delete"
-                       asp-route-id="@student.StudentNumber"
-                       class="btn btn-danger btn-sm">
-                        Delete
-                    </a>
+                        <a asp-action="Index"
+                           class="btn btn-outline-primary">
+                            Clear Filters
+                        </a>
+                    }
 
                 </td>
 

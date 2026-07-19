@@ -1,8 +1,18 @@
 ﻿@model Student
 
-<h2>Edit Student</h2>
+<div class="card shadow">
 
-<form asp-action="Edit" method="post">
+    <div class="card-header bg-warning">
+
+        <h3 class="mb-0">
+            Edit Student
+        </h3>
+
+    </div>
+
+    <div class="card-body">
+
+        <form asp-action="Edit" method="post">
 
     <div asp-validation-summary="ModelOnly"
          class="text-danger mb-3">
@@ -53,6 +63,32 @@
 
     <div class="mb-3">
 
+        <label asp-for="Phone" class="form-label"></label>
+
+        <input asp-for="Phone"
+               class="form-control" />
+
+        <span asp-validation-for="Phone"
+              class="text-danger"></span>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="DateOfBirth" class="form-label"></label>
+
+        <input asp-for="DateOfBirth"
+               type="date"
+               class="form-control"
+               max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+
+        <span asp-validation-for="DateOfBirth"
+              class="text-danger"></span>
+
+    </div>
+
+    <div class="mb-3">
+
         <label asp-for="FacultyId" class="form-label"></label>
 
         <select asp-for="FacultyId"
@@ -86,14 +122,23 @@
     </div>
 
     <div class="mb-3">
+
         <label asp-for="YearLevel" class="form-label"></label>
 
-        <input asp-for="YearLevel"
-               class="form-control" />
+        <select asp-for="YearLevel" class="form-select">
+
+            @for (int i = 1; i <= 6; i++)
+            {
+                <option value="@i">@i</option>
+            }
+
+        </select>
 
         <span asp-validation-for="YearLevel"
               class="text-danger"></span>
+
     </div>
+
     <div class="mb-3">
 
         <label asp-for="Status" class="form-label"></label>
@@ -118,8 +163,48 @@
         Cancel
     </a>
 
-</form>
+        </form>
+
+    </div>
+
+</div>
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        $("#FacultyId").change(function () {
+
+            var facultyId = $(this).val();
+
+            $("#ProgrammeId").empty();
+
+            $("#ProgrammeId").append(
+                '<option value="">-- Select Programme --</option>');
+
+            if (facultyId === "")
+                return;
+
+            $.getJSON("/Student/GetProgrammes",
+                { facultyId: facultyId },
+                function (data) {
+
+                    $.each(data, function (index, programme) {
+
+                        $("#ProgrammeId").append(
+
+                            '<option value="' +
+                            programme.programmeId +
+                            '">' +
+                            programme.programmeName +
+                            '</option>');
+
+                    });
+
+                });
+
+        });
+
+    </script>
 }

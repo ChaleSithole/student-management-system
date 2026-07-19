@@ -1,8 +1,18 @@
 ﻿@model Student
 
-<h2>Add Student</h2>
+<div class="card shadow">
 
-<form asp-action="Create" method="post">
+    <div class="card-header bg-success text-white">
+
+        <h3 class="mb-0">
+            Register New Student
+        </h3>
+
+    </div>
+
+    <div class="card-body">
+
+         <form asp-action="Create" method="post">
 
     <div asp-validation-summary="ModelOnly"
          class="text-danger mb-3">
@@ -50,6 +60,33 @@
 
     <div class="mb-3">
 
+        <label asp-for="Phone" class="form-label"></label>
+
+        <input asp-for="Phone"
+               class="form-control"
+               placeholder="e.g. 0712345678" />
+
+        <span asp-validation-for="Phone"
+              class="text-danger"></span>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="DateOfBirth" class="form-label"></label>
+
+        <input asp-for="DateOfBirth"
+               type="date"
+               class="form-control"
+               max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+
+        <span asp-validation-for="DateOfBirth"
+              class="text-danger"></span>
+
+    </div>
+
+    <div class="mb-3">
+
         <label asp-for="Faculty" class="form-label"></label>
 
         <select asp-for="FacultyId"
@@ -84,13 +121,23 @@
     </div>
 
     <div class="mb-3">
+
         <label asp-for="YearLevel" class="form-label"></label>
 
-        <input asp-for="YearLevel"
-               class="form-control" />
+        <select asp-for="YearLevel" class="form-select">
+
+            <option value="">-- Select Year Level --</option>
+
+            @for (int i = 1; i <= 6; i++)
+            {
+                <option value="@i">@i</option>
+            }
+
+        </select>
 
         <span asp-validation-for="YearLevel"
               class="text-danger"></span>
+
     </div>
 
     <button type="submit"
@@ -103,7 +150,11 @@
         Cancel
     </a>
 
-</form>
+        </form>
+
+    </div>
+
+</div>
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial" />

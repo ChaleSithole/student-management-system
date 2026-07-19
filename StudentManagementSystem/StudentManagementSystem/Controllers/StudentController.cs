@@ -33,8 +33,6 @@ namespace StudentManagementSystem.Controllers
                 pageNumber ?? 1,
                 pageSize);
 
-            ViewBag.CurrentFilter = searchString;
-
             ViewBag.TotalStudents = _studentService.GetTotalStudents();
             ViewBag.ActiveStudents = _studentService.GetStudentsByStatus(StudentStatus.Active);
             ViewBag.GraduatedStudents = _studentService.GetStudentsByStatus(StudentStatus.Graduated);
@@ -141,9 +139,10 @@ namespace StudentManagementSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(Student student)
+        [ActionName("Delete")]
+        public IActionResult DeleteConfirmed(string studentNumber)
         {
-            _studentService.DeleteStudent(student.StudentNumber);
+            _studentService.DeleteStudent(studentNumber);
 
             TempData["SuccessMessage"] = "Student deleted successfully.";
 

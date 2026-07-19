@@ -42,16 +42,11 @@ namespace StudentManagementSystem.Services
             _context.SaveChanges();
         }
 
-        public int GetActiveStudents()
-        {
-            return _context.Students.Count(s => s.Status == StudentStatus.Active);
-        }
-
         public async Task<PaginatedList<Student>> GetStudentsAsync(string? searchString,
                 int? facultyId, int? programmeId,StudentStatus? status,int? yearLevel,
                 int pageIndex,int pageSize)
         {
-            var students = _context.Students
+            var students = _context.Students.AsNoTracking()
                 .Include(s => s.Faculty)
                 .Include(s => s.Programme)
                 .OrderBy(s => s.StudentNumber)
@@ -75,10 +70,16 @@ namespace StudentManagementSystem.Services
                 students = students.Where(s => s.ProgrammeId == programmeId.Value);
             }
 
+            if (status.HasValue)
+            {
+                students = students.Where(s => s.Status == status.Value);
+            }
+
             if (yearLevel.HasValue)
             {
                 students = students.Where(s => s.YearLevel == yearLevel.Value);
             }
+            
 
             return await PaginatedList<Student>.CreateAsync(
                 students,
@@ -96,22 +97,12 @@ namespace StudentManagementSystem.Services
             return _context.Students.Count(s => s.Status == status);
         }
 
-        public int GetGraduatedStudents()
-        {
-            return _context.Students.Count(s => s.Status == StudentStatus.Graduated);
-        }
-
         public Student? GetStudentById(string studentNumber)
         {
-            return _context.Students
+            return _context.Students.AsNoTracking()
                 .Include(s => s.Faculty)
                 .Include(s => s.Programme)
                 .FirstOrDefault(s => s.StudentNumber == studentNumber);
-        }
-
-        public int GetSuspendedStudents()
-        {
-            return _context.Students.Count(s => s.Status == StudentStatus.Suspended);
         }
 
         public void UpdateStudent(Student student)
@@ -126,6 +117,8 @@ namespace StudentManagementSystem.Services
             existingStudent.FirstName = student.FirstName;
             existingStudent.LastName = student.LastName;
             existingStudent.Email = student.Email;
+            existingStudent.Phone = student.Phone;
+            existingStudent.DateOfBirth = student.DateOfBirth;
             existingStudent.FacultyId = student.FacultyId;
             existingStudent.ProgrammeId = student.ProgrammeId;
             existingStudent.YearLevel = student.YearLevel;
@@ -136,17 +129,19 @@ namespace StudentManagementSystem.Services
 
         public List<Faculty> GetAllFaculties()
         {
-            return _context.Faculties
+            return _context.Faculties.AsNoTracking()
                 .OrderBy(f => f.FacultyName)
                 .ToList();
         }
 
         public List<Programme> GetAllProgrammes()
         {
-            return _context.Programmes
+            return _context.Programmes.AsNoTracking()
                 .OrderBy(p => p.ProgrammeName)
                 .ToList();
         }
 
+        
+       
     }
 }

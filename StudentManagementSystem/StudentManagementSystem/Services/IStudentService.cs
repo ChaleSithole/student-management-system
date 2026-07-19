@@ -22,11 +22,6 @@ namespace StudentManagementSystem.Services
 
         int GetTotalStudents();
 
-        int GetActiveStudents();
-
-        int GetGraduatedStudents();
-
-        int GetSuspendedStudents();
         List<Faculty> GetAllFaculties();
 
         List<Programme> GetAllProgrammes();

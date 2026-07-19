@@ -1,7 +1,7 @@
 ﻿using StudentManagementSystem.Models;
 using System.ComponentModel.DataAnnotations;
 
-public class Student
+public class Student : IValidatableObject
 {
     [Key]
     [Required(ErrorMessage = "Student Number is required.")]
@@ -25,8 +25,15 @@ public class Student
     public string Email { get; set; } = string.Empty;
 
     public StudentStatus Status { get; set; } = StudentStatus.Active;
+
+    [Phone(ErrorMessage = "Please enter a valid phone number.")]
+    [StringLength(10)]
+    [Display(Name = "Phone Number")]
     public string? Phone { get; set; }
 
+    [Required(ErrorMessage = "Date of Birth is required.")]
+    [DataType(DataType.Date)]
+    [Display(Name = "Date of Birth")]
     public DateTime DateOfBirth { get; set; }
 
     [Required(ErrorMessage = "Please select a Faculty.")]
@@ -49,4 +56,35 @@ public class Student
     [Display(Name = "Registration Date")]
     [DataType(DataType.Date)]
     public DateTime RegistrationDate { get; set; } = DateTime.Now;
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (DateOfBirth > DateTime.Today)
+        {
+            yield return new ValidationResult(
+                "Date of Birth cannot be in the future.",
+                new[] { nameof(DateOfBirth) });
+        }
+
+        var age = DateTime.Today.Year - DateOfBirth.Year;
+
+        if (DateOfBirth.Date > DateTime.Today.AddYears(-age))
+        {
+            age--;
+        }
+
+        if (age < 15)
+        {
+            yield return new ValidationResult(
+                "Student must be at least 15 years old.",
+                new[] { nameof(DateOfBirth) });
+        }
+
+        if (age > 100)
+        {
+            yield return new ValidationResult(
+                "Please enter a valid Date of Birth.",
+                new[] { nameof(DateOfBirth) });
+        }
+    }
 }
