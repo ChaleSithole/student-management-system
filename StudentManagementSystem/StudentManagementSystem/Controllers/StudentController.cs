@@ -20,6 +20,7 @@ namespace StudentManagementSystem.Controllers
             int? programmeId,
             StudentStatus? status,
             int? yearLevel,
+            string? sortOrder,
             int? pageNumber)
         {
             const int pageSize = 5;
@@ -30,6 +31,7 @@ namespace StudentManagementSystem.Controllers
                 programmeId,
                 status,
                 yearLevel,
+                sortOrder,
                 pageNumber ?? 1,
                 pageSize);
 
@@ -46,6 +48,44 @@ namespace StudentManagementSystem.Controllers
             ViewBag.CurrentProgramme = programmeId;
             ViewBag.CurrentStatus = status;
             ViewBag.CurrentYearLevel = yearLevel;
+            ViewBag.CurrentSort = sortOrder;
+
+            ViewBag.StudentNumberSort = sortOrder == "number_desc" ? "" : "number_desc";
+
+            ViewBag.NameSort = sortOrder == "name" ? "name_desc" : "name";
+
+            ViewBag.FacultySort = sortOrder == "faculty" ? "faculty_desc" : "faculty";
+
+            ViewBag.ProgrammeSort = sortOrder == "programme" ? "programme_desc" : "programme";
+
+            ViewBag.YearSort = sortOrder == "year" ? "year_desc" : "year";
+
+            ViewBag.StatusSort = sortOrder == "status" ? "status_desc" : "status";
+
+            ViewBag.CurrentSort = sortOrder;
+
+            ViewBag.StudentNumberIndicator =
+                sortOrder == "number_desc" ? "▼" : sortOrder == "" || sortOrder == null ? "▲" : "";
+
+            ViewBag.NameIndicator =
+                sortOrder == "name" ? "▲" :
+                sortOrder == "name_desc" ? "▼" : "";
+
+            ViewBag.FacultyIndicator =
+                sortOrder == "faculty" ? "▲" :
+                sortOrder == "faculty_desc" ? "▼" : "";
+
+            ViewBag.ProgrammeIndicator =
+                sortOrder == "programme" ? "▲" :
+                sortOrder == "programme_desc" ? "▼" : "";
+
+            ViewBag.YearIndicator =
+                sortOrder == "year" ? "▲" :
+                sortOrder == "year_desc" ? "▼" : "";
+
+            ViewBag.StatusIndicator =
+                sortOrder == "status" ? "▲" :
+                sortOrder == "status_desc" ? "▼" : "";
 
             return View(students);
         }

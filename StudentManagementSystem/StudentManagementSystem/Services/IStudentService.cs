@@ -10,6 +10,7 @@ namespace StudentManagementSystem.Services
             int? programmeId,
             StudentStatus? status,
             int? yearLevel,
+            string? sortOrder,
             int pageIndex,
             int pageSize);
         Student? GetStudentById(string studentNumber);

@@ -42,14 +42,19 @@ namespace StudentManagementSystem.Services
             _context.SaveChanges();
         }
 
-        public async Task<PaginatedList<Student>> GetStudentsAsync(string? searchString,
-                int? facultyId, int? programmeId,StudentStatus? status,int? yearLevel,
-                int pageIndex,int pageSize)
+        public async Task<PaginatedList<Student>> GetStudentsAsync(
+                string? searchString,
+                int? facultyId,
+                int? programmeId,
+                StudentStatus? status,
+                int? yearLevel,
+                string? sortOrder,
+                int pageIndex,
+                int pageSize)
         {
             var students = _context.Students.AsNoTracking()
                 .Include(s => s.Faculty)
                 .Include(s => s.Programme)
-                .OrderBy(s => s.StudentNumber)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchString))
@@ -79,7 +84,59 @@ namespace StudentManagementSystem.Services
             {
                 students = students.Where(s => s.YearLevel == yearLevel.Value);
             }
-            
+
+            switch (sortOrder)
+            {
+                case "number_desc":
+                    students = students.OrderByDescending(s => s.StudentNumber);
+                    break;
+
+                case "name":
+                    students = students.OrderBy(s => s.FirstName)
+                                       .ThenBy(s => s.LastName);
+                    break;
+
+                case "name_desc":
+                    students = students.OrderByDescending(s => s.FirstName)
+                                       .ThenByDescending(s => s.LastName);
+                    break;
+
+                case "faculty":
+                    students = students.OrderBy(s => s.Faculty!.FacultyName);
+                    break;
+
+                case "faculty_desc":
+                    students = students.OrderByDescending(s => s.Faculty!.FacultyName);
+                    break;
+
+                case "programme":
+                    students = students.OrderBy(s => s.Programme!.ProgrammeName);
+                    break;
+
+                case "programme_desc":
+                    students = students.OrderByDescending(s => s.Programme!.ProgrammeName);
+                    break;
+
+                case "year":
+                    students = students.OrderBy(s => s.YearLevel);
+                    break;
+
+                case "year_desc":
+                    students = students.OrderByDescending(s => s.YearLevel);
+                    break;
+
+                case "status":
+                    students = students.OrderBy(s => s.Status);
+                    break;
+
+                case "status_desc":
+                    students = students.OrderByDescending(s => s.Status);
+                    break;
+
+                default:
+                    students = students.OrderBy(s => s.StudentNumber);
+                    break;
+            }
 
             return await PaginatedList<Student>.CreateAsync(
                 students,

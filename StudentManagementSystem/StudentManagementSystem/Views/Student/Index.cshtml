@@ -177,12 +177,90 @@
     <thead>
 
         <tr>
-            <th>Student Number</th>
-            <th>Name</th>
-            <th>Faculty</th>
-            <th>Programme</th>
-            <th>Year</th>
-            <th>Status</th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewBag.StudentNumberSort"
+                   asp-route-searchString="@ViewBag.CurrentFilter"
+                   asp-route-facultyId="@ViewBag.CurrentFaculty"
+                   asp-route-programmeId="@ViewBag.CurrentProgramme"
+                   asp-route-status="@ViewBag.CurrentStatus"
+                   asp-route-yearLevel="@ViewBag.CurrentYearLevel"
+                   class="text-dark text-decoration-none fw-bold">
+
+                    Student Number @ViewBag.StudentNumberIndicator
+
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewBag.NameSort"
+                   asp-route-searchString="@ViewBag.CurrentFilter"
+                   asp-route-facultyId="@ViewBag.CurrentFaculty"
+                   asp-route-programmeId="@ViewBag.CurrentProgramme"
+                   asp-route-status="@ViewBag.CurrentStatus"
+                   asp-route-yearLevel="@ViewBag.CurrentYearLevel"
+                   class="text-dark text-decoration-none fw-bold">
+
+                    Name @ViewBag.NameIndicator
+
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewBag.FacultySort"
+                   asp-route-searchString="@ViewBag.CurrentFilter"
+                   asp-route-facultyId="@ViewBag.CurrentFaculty"
+                   asp-route-programmeId="@ViewBag.CurrentProgramme"
+                   asp-route-status="@ViewBag.CurrentStatus"
+                   asp-route-yearLevel="@ViewBag.CurrentYearLevel"
+                   class="text-dark text-decoration-none fw-bold">
+
+                    Faculty @ViewBag.FacultyIndicator
+
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewBag.ProgrammeSort"
+                   asp-route-searchString="@ViewBag.CurrentFilter"
+                   asp-route-facultyId="@ViewBag.CurrentFaculty"
+                   asp-route-programmeId="@ViewBag.CurrentProgramme"
+                   asp-route-status="@ViewBag.CurrentStatus"
+                   asp-route-yearLevel="@ViewBag.CurrentYearLevel"
+                   class="text-dark text-decoration-none fw-bold">
+
+                    Programme @ViewBag.ProgrammeIndicator
+
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewBag.YearSort"
+                   asp-route-searchString="@ViewBag.CurrentFilter"
+                   asp-route-facultyId="@ViewBag.CurrentFaculty"
+                   asp-route-programmeId="@ViewBag.CurrentProgramme"
+                   asp-route-status="@ViewBag.CurrentStatus"
+                   asp-route-yearLevel="@ViewBag.CurrentYearLevel"
+                   class="text-dark text-decoration-none fw-bold">
+
+                    Year @ViewBag.YearIndicator
+
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewBag.StatusSort"
+                   asp-route-searchString="@ViewBag.CurrentFilter"
+                   asp-route-facultyId="@ViewBag.CurrentFaculty"
+                   asp-route-programmeId="@ViewBag.CurrentProgramme"
+                   asp-route-status="@ViewBag.CurrentStatus"
+                   asp-route-yearLevel="@ViewBag.CurrentYearLevel"
+                   class="text-dark text-decoration-none fw-bold">
+
+                    Status @ViewBag.StatusIndicator
+
+                </a>
+            </th>
             <th>Actions</th>
         </tr>
 
@@ -305,6 +383,7 @@
             <a class="page-link"
                asp-action="Index"
                asp-route-pageNumber="@(Model.PageIndex - 1)"
+               asp-route-sortOrder="@ViewBag.CurrentSort"
                asp-route-searchString="@ViewBag.CurrentFilter"
                asp-route-facultyId="@ViewBag.CurrentFaculty"
                asp-route-programmeId="@ViewBag.CurrentProgramme"
@@ -324,6 +403,7 @@
                 <a class="page-link"
                    asp-action="Index"
                    asp-route-pageNumber="@i"
+                   asp-route-sortOrder="@ViewBag.CurrentSort"
                    asp-route-searchString="@ViewBag.CurrentFilter"
                    asp-route-facultyId="@ViewBag.CurrentFaculty"
                    asp-route-programmeId="@ViewBag.CurrentProgramme"
@@ -342,6 +422,7 @@
             <a class="page-link"
                asp-action="Index"
                asp-route-pageNumber="@(Model.PageIndex + 1)"
+               asp-route-sortOrder="@ViewBag.CurrentSort"
                asp-route-searchString="@ViewBag.CurrentFilter"
                asp-route-facultyId="@ViewBag.CurrentFaculty"
                asp-route-programmeId="@ViewBag.CurrentProgramme"
