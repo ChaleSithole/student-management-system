@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StudentManagementSystem.Models;
-using StudentManagementSystem.Services;
 using StudentManagementSystem.Models.ViewModels;
+using StudentManagementSystem.Services;
 
 namespace StudentManagementSystem.Controllers
 {
+    [Authorize]
     public class FacultyController : Controller
     {
         private readonly IFacultyService _facultyService;

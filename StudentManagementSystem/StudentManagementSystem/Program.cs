@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using StudentManagementSystem.Data;
 using StudentManagementSystem.Services;
+using Microsoft.AspNetCore.Identity;
+using StudentManagementSystem.Data;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,10 +12,29 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IStudentService, StudentService>();
+
 builder.Services.AddScoped<IFacultyService, FacultyService>();
+
 builder.Services.AddScoped<IProgrammeService, ProgrammeService>();
 
-// Add services to the container.
+builder.Services
+    .AddIdentity<IdentityUser, IdentityRole>(options =>
+    {
+        options.Password.RequireDigit = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireNonAlphanumeric = true;
+        options.Password.RequiredLength = 8;
+    })
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/Login";
+});
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -27,7 +48,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
@@ -37,5 +61,12 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    await DbInitializer.SeedUsersAndRolesAsync(services);
+}
 
 app.Run();

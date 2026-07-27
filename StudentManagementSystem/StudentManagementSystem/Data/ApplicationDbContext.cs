@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudentManagementSystem.Data.Seed;
 using StudentManagementSystem.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace StudentManagementSystem.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

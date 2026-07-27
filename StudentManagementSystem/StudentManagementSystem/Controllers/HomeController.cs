@@ -3,9 +3,11 @@ using StudentManagementSystem.Models;
 using StudentManagementSystem.Models.ViewModels;
 using StudentManagementSystem.Services;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StudentManagementSystem.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

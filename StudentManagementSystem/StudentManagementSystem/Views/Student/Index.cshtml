@@ -163,10 +163,13 @@
 
     <div class="col-md-2 text-end">
 
-        <a asp-action="Create"
-           class="btn btn-success">
-            + Add Student
-        </a>
+        @if (User.IsInRole("Administrator"))
+        {
+            <a asp-action="Create"
+               class="btn btn-success">
+                + Add Student
+            </a>
+        }
 
     </div>
 
@@ -315,17 +318,20 @@
                             Details
                         </a>
 
-                        <a asp-action="Edit"
-                           asp-route-id="@student.StudentNumber"
-                           class="btn btn-warning btn-sm">
-                            Edit
-                        </a>
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <a asp-action="Edit"
+                               asp-route-id="@student.StudentNumber"
+                               class="btn btn-warning btn-sm">
+                                Edit
+                            </a>
 
-                        <a asp-action="Delete"
-                           asp-route-id="@student.StudentNumber"
-                           class="btn btn-danger btn-sm">
-                            Delete
-                        </a>
+                            <a asp-action="Delete"
+                               asp-route-id="@student.StudentNumber"
+                               class="btn btn-danger btn-sm">
+                                Delete
+                            </a>
+                        }
 
                     </td>
 

@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using StudentManagementSystem.Data;
 using StudentManagementSystem.Models;
 using StudentManagementSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StudentManagementSystem.Controllers
 {
+    [Authorize]
     public class StudentController : Controller
     {
         private readonly IStudentService _studentService;
@@ -90,6 +92,7 @@ namespace StudentManagementSystem.Controllers
             return View(students);
         }
 
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             ViewBag.Faculties = _studentService.GetAllFaculties();
@@ -100,6 +103,7 @@ namespace StudentManagementSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create(Student student)
         {
             if (ModelState.IsValid)
@@ -129,6 +133,7 @@ namespace StudentManagementSystem.Controllers
             return View(student);
         }
 
+        [Authorize(Roles = "Administrator")]
         public IActionResult Edit(string id)
         {
             if (id == null)
@@ -146,6 +151,7 @@ namespace StudentManagementSystem.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Student student)
         {
@@ -164,6 +170,7 @@ namespace StudentManagementSystem.Controllers
             return View(student);
         }
 
+        [Authorize(Roles = "Administrator")]
         public IActionResult Delete(string id)
         {
             if (id == null)
@@ -178,6 +185,7 @@ namespace StudentManagementSystem.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
         [ActionName("Delete")]
         public IActionResult DeleteConfirmed(string studentNumber)

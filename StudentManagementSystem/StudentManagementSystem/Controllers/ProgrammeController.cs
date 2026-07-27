@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using StudentManagementSystem.Models;
 using StudentManagementSystem.Models.ViewModels;
@@ -6,6 +7,7 @@ using StudentManagementSystem.Services;
 
 namespace StudentManagementSystem.Controllers
 {
+    [Authorize]
     public class ProgrammeController : Controller
     {
         private readonly IProgrammeService _programmeService;
