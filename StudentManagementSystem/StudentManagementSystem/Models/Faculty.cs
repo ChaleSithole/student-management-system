@@ -2,6 +2,7 @@
 
 namespace StudentManagementSystem.Models
 {
+    // Represents a university faculty.
     public class Faculty
     {
         [Key]

@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using StudentManagementSystem.Data;
 using StudentManagementSystem.Services;
 using Microsoft.AspNetCore.Identity;
-using StudentManagementSystem.Data;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,7 +31,7 @@ builder.Services
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
-    options.AccessDeniedPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
 builder.Services.AddControllersWithViews();

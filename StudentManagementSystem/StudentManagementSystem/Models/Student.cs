@@ -3,7 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 public class Student : IValidatableObject
 {
-    [Key]
+    // Represents a university student.
+    // Stores personal information, academic details
+    // and relationships to Faculty and Programme.
+   [Key]
     [Required(ErrorMessage = "Student Number is required.")]
     [StringLength(10, ErrorMessage = "Student Number cannot exceed 10 characters.")]
     [Display(Name = "Student Number")]

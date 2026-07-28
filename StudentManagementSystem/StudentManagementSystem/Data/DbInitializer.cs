@@ -44,6 +44,32 @@ namespace StudentManagementSystem.Data
                     await userManager.AddToRoleAsync(adminUser, "Administrator");
                 }
             }
+
+            string lecturerEmail = "lecturer@university.co.za";
+            string lecturerPassword = "Lecturer@123";
+
+            var lecturerUser = await userManager.FindByEmailAsync(lecturerEmail);
+
+            if (lecturerUser == null)
+            {
+                lecturerUser = new IdentityUser
+                {
+                    UserName = lecturerEmail,
+                    Email = lecturerEmail,
+                    EmailConfirmed = true
+                };
+
+                var result = await userManager.CreateAsync(
+                    lecturerUser,
+                    lecturerPassword);
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(
+                        lecturerUser,
+                        "Lecturer");
+                }
+            }
         }
     }
 }

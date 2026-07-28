@@ -7,15 +7,22 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace StudentManagementSystem.Controllers
 {
+    
+    // Handles all student-related operations such as
+    // viewing, creating, editing, deleting and searching students.
+    
     [Authorize]
     public class StudentController : Controller
     {
         private readonly IStudentService _studentService;
 
+        // Injects the student service using Dependency Injection.
         public StudentController(IStudentService studentService)
         {
             _studentService = studentService;
         }
+
+        // Displays all students and does searching, filtering, sorting & pagnation.
         public async Task<IActionResult> Index(
             string? searchString,
             int? facultyId,
@@ -25,8 +32,11 @@ namespace StudentManagementSystem.Controllers
             string? sortOrder,
             int? pageNumber)
         {
+
+            // Number of students displayed per page.
             const int pageSize = 5;
 
+            // Retrieve students after applying all filters and sorting.
             var students = await _studentService.GetStudentsAsync(
                 searchString,
                 facultyId,
@@ -37,14 +47,18 @@ namespace StudentManagementSystem.Controllers
                 pageNumber ?? 1,
                 pageSize);
 
+
+            // Dashboard statistics displayed above the student table.
             ViewBag.TotalStudents = _studentService.GetTotalStudents();
             ViewBag.ActiveStudents = _studentService.GetStudentsByStatus(StudentStatus.Active);
             ViewBag.GraduatedStudents = _studentService.GetStudentsByStatus(StudentStatus.Graduated);
             ViewBag.SuspendedStudents = _studentService.GetStudentsByStatus(StudentStatus.Suspended);
 
+            // Populate dropdown lists used by filters.
             ViewBag.Faculties = _studentService.GetAllFaculties();
             ViewBag.Programmes = _studentService.GetAllProgrammes();
 
+            // Preserve selected filter values after each search.
             ViewBag.CurrentFilter = searchString;
             ViewBag.CurrentFaculty = facultyId;
             ViewBag.CurrentProgramme = programmeId;
@@ -52,6 +66,7 @@ namespace StudentManagementSystem.Controllers
             ViewBag.CurrentYearLevel = yearLevel;
             ViewBag.CurrentSort = sortOrder;
 
+            // Configure ascending and descending sorting for each column.
             ViewBag.StudentNumberSort = sortOrder == "number_desc" ? "" : "number_desc";
 
             ViewBag.NameSort = sortOrder == "name" ? "name_desc" : "name";
@@ -66,6 +81,7 @@ namespace StudentManagementSystem.Controllers
 
             ViewBag.CurrentSort = sortOrder;
 
+            // Display ▲ or ▼ icons beside the active sorted column.
             ViewBag.StudentNumberIndicator =
                 sortOrder == "number_desc" ? "▼" : sortOrder == "" || sortOrder == null ? "▲" : "";
 
@@ -89,25 +105,33 @@ namespace StudentManagementSystem.Controllers
                 sortOrder == "status" ? "▲" :
                 sortOrder == "status_desc" ? "▼" : "";
 
+            // Send the filtered student list to the view.
             return View(students);
         }
 
+        
+        // Displays the Create Student page.
+        // Only administrators are allowed to access this page.
         [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
+            // Populate dropdown lists.
             ViewBag.Faculties = _studentService.GetAllFaculties();
             ViewBag.Programmes = _studentService.GetAllProgrammes();
 
             return View();
         }
 
+        // Saves a new student to the database.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
         public IActionResult Create(Student student)
         {
+            // Ensure all validation rules have passed.
             if (ModelState.IsValid)
             {
+                // Prevent duplicate student numbers.
                 bool success = _studentService.AddStudent(student);
 
                 if (!success)
@@ -133,12 +157,14 @@ namespace StudentManagementSystem.Controllers
             return View(student);
         }
 
+        // Loads the selected student into the edit form.
         [Authorize(Roles = "Administrator")]
         public IActionResult Edit(string id)
         {
             if (id == null)
                 return NotFound();
 
+            // Retrieve the student by student number.
             var student = _studentService.GetStudentById(id);
 
             if (student == null)
@@ -150,6 +176,7 @@ namespace StudentManagementSystem.Controllers
             return View(student);
         }
 
+        // Updates an existing student's information.
         [HttpPost]
         [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
@@ -157,6 +184,7 @@ namespace StudentManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Save the updated student details.
                 _studentService.UpdateStudent(student);
 
                 TempData["SuccessMessage"] = "Student updated successfully.";
@@ -170,6 +198,7 @@ namespace StudentManagementSystem.Controllers
             return View(student);
         }
 
+        // Displays the delete confirmation page.
         [Authorize(Roles = "Administrator")]
         public IActionResult Delete(string id)
         {
@@ -184,6 +213,7 @@ namespace StudentManagementSystem.Controllers
             return View(student);
         }
 
+        // Permanently removes a student from the database.
         [HttpPost]
         [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
@@ -197,6 +227,7 @@ namespace StudentManagementSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Displays detailed information about one student.
         public IActionResult Details(string id)
         {
             if (id == null)
@@ -210,9 +241,12 @@ namespace StudentManagementSystem.Controllers
             return View(student);
         }
 
+        // Returns all programmes belonging to the selected faculty.
+        // Used by AJAX to update the Programme dropdown.
         [HttpGet]
         public JsonResult GetProgrammes(int facultyId)
         {
+            // Retrieve only programmes linked to the selected faculty.
             var programmes = _studentService
                 .GetAllProgrammes()
                 .Where(p => p.FacultyId == facultyId)

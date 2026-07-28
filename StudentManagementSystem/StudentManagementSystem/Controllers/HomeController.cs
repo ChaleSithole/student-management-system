@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace StudentManagementSystem.Controllers
 {
+    // Displays the application dashboard and general pages.
     [Authorize]
     public class HomeController : Controller
     {
@@ -15,6 +16,7 @@ namespace StudentManagementSystem.Controllers
         private readonly IFacultyService _facultyService;
         private readonly IProgrammeService _programmeService;
 
+        // Injects the services required to build the dashboard.
         public HomeController(
             ILogger<HomeController> logger,
             IStudentService studentService,
@@ -27,16 +29,21 @@ namespace StudentManagementSystem.Controllers
             _programmeService = programmeService;
         }
 
+        // Displays the dashboard containing overall statistics
+        // about students, faculties and programmes.
         public IActionResult Index()
         {
+            // Create the dashboard model that contains all summary statistics.
             DashboardViewModel model = new DashboardViewModel
             {
+                // Retrieve overall totals from the service layer.
                 TotalStudents = _studentService.GetTotalStudents(),
                 ActiveStudents = _studentService.GetStudentsByStatus(StudentStatus.Active),
                 TotalFaculties = _facultyService.GetTotalFaculties(),
                 TotalProgrammes = _programmeService.GetTotalProgrammes()
             };
 
+            // Pass the dashboard data to the view.
             return View(model);
         }
 

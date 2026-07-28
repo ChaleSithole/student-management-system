@@ -51,50 +51,39 @@
                     <ul class="navbar-nav me-auto">
 
                         <li class="nav-item">
+                        <a class="nav-link"
+                           asp-controller="Home"
+                           asp-action="Index">
+                            Home
+                        </a>
+                    </li>
 
-                            <a class="nav-link"
-                               asp-controller="Home"
-                               asp-action="Index">
-                                Home
-                            </a>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           asp-controller="Student"
+                           asp-action="Index">
+                            Students
+                        </a>
+                    </li>
 
-                        </li>
-
+                    @if (User.IsInRole("Administrator"))
+                    {
                         <li class="nav-item">
-
-                            <a class="nav-link"
-                               asp-controller="Student"
-                               asp-action="Index">
-
-                                Students
-
-                            </a>
-
-                        </li>
-
-                        <li class="nav-item">
-
                             <a class="nav-link"
                                asp-controller="Faculty"
                                asp-action="Index">
-
                                 Faculties
-
                             </a>
-
                         </li>
 
                         <li class="nav-item">
-
                             <a class="nav-link"
                                asp-controller="Programme"
                                asp-action="Index">
-
                                 Programmes
-
                             </a>
-
                         </li>
+                    }
 
                     </ul>
 
@@ -107,7 +96,9 @@
                             <span class="nav-link text-white">
 
                                 Welcome,
-                                <strong>@User.Identity.Name</strong>
+                                <strong>
+                                    @(User.IsInRole("Administrator") ? "Administrator" : "Lecturer")
+                                </strong>
 
                             </span>
 

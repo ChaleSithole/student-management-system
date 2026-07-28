@@ -2,6 +2,7 @@
 
 namespace StudentManagementSystem.Models
 {
+    // Represents an academic programme.
     public class Programme
     {
         [Key]

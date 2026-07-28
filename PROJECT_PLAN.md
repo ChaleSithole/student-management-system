@@ -1,34 +1,134 @@
 # Student Management System
 
-## Goal
-Build a modern Student Management System using ASP.NET Core MVC and SQL Server.
+## Project Goal
 
-## Planned Features
+Develop a modern Student Management System using ASP.NET Core MVC, Entity Framework Core, SQL Server and ASP.NET Identity.
 
-- User Authentication
-- Student Registration
-- Search Students
-- Edit Student Information
-- Delete Student Records
-- Dashboard
-- Reports
-- SQL Server Database
-- Responsive Interface
+The system allows university administrators to manage students, faculties and programmes through a secure web application.
 
-## Technologies
+---
 
-- ASP.NET Core MVC
+# Technologies
+
+- ASP.NET Core MVC (.NET 9)
 - C#
-- SQL Server
 - Entity Framework Core
-- Bootstrap
-- Git
+- SQL Server (LocalDB)
+- ASP.NET Identity
+- Bootstrap 5
+- LINQ
+- Git & GitHub
 
-## Status
+---
 
-- [x] Git Repository Created
-- [ ] ASP.NET Core Project Created
-- [ ] Database Designed
-- [ ] Student CRUD Complete
-- [ ] Authentication Added
+# Features
+
+## Authentication
+- Administrator Login
+- Lecturer Login
+- Role-based Authorization
+- ASP.NET Identity
+- Secure Password Hashing
+
+---
+
+## Dashboard
+
+- University Dashboard
+- Student Statistics
+- Faculty Statistics
+- Programme Statistics
+- Active Student Count
+- Quick Actions
+
+---
+
+## Student Management
+
+- Add Student
+- Edit Student
+- Delete Student
+- View Student Details
+- Student Search
+- Filtering
+- Sorting
+- Pagination
+- Duplicate Student Number Validation
+
+---
+
+## Faculty Management
+
+- Add Faculty
+- Edit Faculty
+- Delete Faculty
+- Faculty Statistics
+- Prevent deleting faculties that contain programmes
+
+---
+
+## Programme Management
+
+- Add Programme
+- Edit Programme
+- Delete Programme
+- Programme Statistics
+- Prevent deleting programmes containing students
+
+---
+
+## Security
+
+Administrator can:
+
+- Manage Students
+- Manage Faculties
+- Manage Programmes
+
+Lecturer can:
+
+- View Dashboard
+- View Students
+
+---
+
+## User Interface
+
+- Responsive Bootstrap Layout
+- Navigation Bar
+- Success Messages
+- Error Messages
+- Validation
+- Confirmation Pages
+
+---
+
+# Project Progress
+
+## Completed
+
+- [x] Git Repository
+- [x] ASP.NET Core MVC Project
+- [x] SQL Server Database
+- [x] Entity Framework Core
+- [x] Student CRUD
+- [x] Faculty CRUD
+- [x] Programme CRUD
+- [x] Dashboard
+- [x] Search
+- [x] Sorting
+- [x] Filtering
+- [x] Pagination
+- [x] Authentication
+- [x] Authorization
+- [x] Role Management
+- [x] Validation
+- [x] Responsive UI
+
+---
+
+## Remaining
+
+- [ ] Reports
+- [ ] Activity Logging
 - [ ] Deployment

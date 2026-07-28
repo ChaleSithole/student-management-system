@@ -24,12 +24,17 @@
 
     <h2>Programme Management</h2>
 
-    <a asp-action="Create"
-       class="btn btn-success">
+    @if (User.IsInRole("Administrator"))
+    {
+        <a asp-action="Create"
+           class="btn btn-success">
 
-        + Add Programme
+            + Add Programme
 
-    </a>
+        </a>
+    }
+    
+
 
 </div>
 
@@ -103,35 +108,37 @@
                 </td>
 
                 <td>
-
-                    <a asp-action="Edit"
-                       asp-route-id="@item.Programme.ProgrammeId"
-                       class="btn btn-warning btn-sm">
-
-                        Edit
-
-                    </a>
-
-                    @if (item.CanDelete)
+                    @if (User.IsInRole("Administrator"))
                     {
-                        <a asp-action="Delete"
+                        <a asp-action="Edit"
                            asp-route-id="@item.Programme.ProgrammeId"
-                           class="btn btn-danger btn-sm">
+                           class="btn btn-warning btn-sm">
 
-                            Delete
+                            Edit
 
                         </a>
+
+                        @if (item.CanDelete)
+                        {
+                            <a asp-action="Delete"
+                               asp-route-id="@item.Programme.ProgrammeId"
+                               class="btn btn-danger btn-sm">
+
+                                Delete
+
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary btn-sm"
+                                    disabled>
+
+                                Delete
+
+                            </button>
+                        }
                     }
-                    else
-                    {
-                        <button class="btn btn-secondary btn-sm"
-                                disabled>
-
-                            Delete
-
-                        </button>
-                    }
-
+                    
                 </td>
 
             </tr>

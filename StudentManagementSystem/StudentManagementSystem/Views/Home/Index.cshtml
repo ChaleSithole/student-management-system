@@ -15,7 +15,15 @@
     </h3>
 
     <p class="lead mt-3">
-        Welcome back, Administrator.
+
+        Welcome back,
+
+        <strong>
+            @(User.IsInRole("Administrator")
+                ? "Administrator"
+                : "Lecturer")
+        </strong>.
+
     </p>
 
 </div>
@@ -75,11 +83,14 @@
         <div class="row g-3">
 
             <div class="col-md-3 d-grid">
-                <a asp-controller="Student"
-                   asp-action="Create"
-                   class="btn btn-success btn-lg">
-                    Add Student
-                </a>
+                @if (User.IsInRole("Administrator"))
+                {
+                    <a asp-controller="Student"
+                       asp-action="Create"
+                       class="btn btn-success">
+                        Add Student
+                    </a>
+                }
             </div>
 
             <div class="col-md-3 d-grid">
@@ -90,21 +101,35 @@
                 </a>
             </div>
 
-            <div class="col-md-3 d-grid">
-                <a asp-controller="Faculty"
-                   asp-action="Index"
-                   class="btn btn-warning btn-lg">
-                    Manage Faculties
-                </a>
-            </div>
+            @if (User.IsInRole("Administrator"))
+            {
+                <div class="col-md-3 d-grid">
 
-            <div class="col-md-3 d-grid">
-                <a asp-controller="Programme"
-                   asp-action="Index"
-                   class="btn btn-info btn-lg text-white">
-                    Manage Programmes
-                </a>
-            </div>
+                    <a asp-controller="Faculty"
+                       asp-action="Index"
+                       class="btn btn-warning btn-lg">
+
+                        Manage Faculties
+
+                    </a>
+
+                </div>
+            }
+
+            @if (User.IsInRole("Administrator"))
+            {
+                <div class="col-md-3 d-grid">
+
+                    <a asp-controller="Faculty"
+                       asp-action="Index"
+                       class="btn btn-warning btn-lg">
+
+                        Manage Pogrammes
+
+                    </a>
+
+                </div>
+            }
 
         </div>
 

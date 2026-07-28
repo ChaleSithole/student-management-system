@@ -4,6 +4,7 @@ using StudentManagementSystem.Models;
 
 namespace StudentManagementSystem.Services
 {
+    //Provides business logic for programme management.
     public class ProgrammeService : IProgrammeService
     {
         private readonly ApplicationDbContext _context;
@@ -13,6 +14,7 @@ namespace StudentManagementSystem.Services
             _context = context;
         }
 
+        //Retrieves every programme.
         public List<Programme> GetAll()
         {
             return _context.Programmes
@@ -49,6 +51,7 @@ namespace StudentManagementSystem.Services
         {
             var programme = _context.Programmes.Find(id);
 
+            //Prevent deleting programme if it has enrolled students.
             if (programme == null)
                 return false;
 

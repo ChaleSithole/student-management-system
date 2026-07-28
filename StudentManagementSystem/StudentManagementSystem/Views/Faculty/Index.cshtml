@@ -57,12 +57,16 @@
 
     </div>
 
-    <a asp-action="Create"
-       class="btn btn-success">
+    @if (User.IsInRole("Administrator"))
+    {
+        <a asp-action="Create"
+           class="btn btn-success">
 
-        + Add Faculty
+            + Add Faculty
 
-    </a>
+        </a>
+    }
+    
 
 </div>
 
@@ -117,34 +121,36 @@
                 </td>
 
                 <td>
-
-                    <a asp-action="Edit"
-                       asp-route-id="@item.Faculty.FacultyId"
-                       class="btn btn-warning btn-sm">
-
-                        Edit
-
-                    </a>
-
-                    @if (item.CanDelete)
+                    @if (User.IsInRole("Administrator"))
                     {
-                        <a asp-action="Delete"
-                           asp-route-id="@item.Faculty.FacultyId"
-                           class="btn btn-danger btn-sm">
+                        <a asp-action="Edit"
+                        asp-route-id="@item.Faculty.FacultyId"
+                        class="btn btn-warning btn-sm">
 
-                            Delete
+                            Edit
 
                         </a>
-                    }
-                    else
-                    {
-                        <button class="btn btn-secondary btn-sm"
-                                disabled
-                                title="Faculty contains programmes">
 
-                            Delete
+                        @if (item.CanDelete)
+                        {
+                            <a asp-action="Delete"
+                            asp-route-id="@item.Faculty.FacultyId"
+                            class="btn btn-danger btn-sm">
 
-                        </button>
+                                Delete
+
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary btn-sm"
+                            disabled
+                            title="Faculty contains programmes">
+
+                                Delete
+
+                            </button>
+                        }
                     }
 
                 </td>

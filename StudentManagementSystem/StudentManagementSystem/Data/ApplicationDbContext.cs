@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace StudentManagementSystem.Data
 {
+    // Entity Framework Core database context.
+    // Responsible for communicating with SQL Server.
     public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -12,6 +14,7 @@ namespace StudentManagementSystem.Data
         {
         }
 
+        // Configures relationships and database rules.
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
